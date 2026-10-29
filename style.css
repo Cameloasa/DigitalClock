@@ -1,26 +1,468 @@
-body{
-    background-image: url(image.jpg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    margin: 0;
+
+/* ========================================
+   1. DESIGN TOKENS
+======================================== */
+
+:root {
+    color-scheme: dark;
+
+    --color-background: #211626;
+    --color-surface: #302235;
+    --color-surface-hover: #3B2A40;
+    --color-text: #FFF4E8;
+    --color-muted: #C2AFBF;
+    --color-coral: #FF9B91;
+    --color-rose: #D98BA3;
+    --color-sage: #B3C6A5;
+    --color-border: rgb(255 244 232 / 12%);
+
+    --font-body: "DM Sans", sans-serif;
+    --font-clock: "Space Mono", monospace;
+
+    --radius-card: 1.5rem;
+    --radius-pill: 999px;
+
+    --shadow-clock: 0 0 70px rgb(255 155 145 / 9%);
 }
 
-#clock-container{
+/* ========================================
+   2. LIGHT THEME
+======================================== */
+
+body.light-theme {
+    color-scheme: light;
+
+    --color-background: #F8EFE9;
+    --color-surface: #FFF9F4;
+    --color-surface-hover: #F3E4E0;
+    --color-text: #392737;
+    --color-muted: #715D70;
+    --color-coral: #A94455;
+    --color-rose: #A64D72;
+    --color-sage: #526D50;
+    --color-border: rgb(57 39 55 / 13%);
+
+    --shadow-clock: 0 0 70px rgb(169 68 85 / 8%);
+}
+
+/* ========================================
+   3. GLOBAL STYLES
+======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(
+            ellipse at 50% 15%,
+            rgb(133 79 119 / 20%),
+            transparent 48%
+        ),
+        var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    transition:
+        background-color 250ms ease,
+        color 250ms ease;
+}
+
+button {
+    font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--color-sage);
+    outline-offset: 4px;
+}
+
+::selection {
+    background: var(--color-coral);
+    color: #211626;
+}
+
+/* ========================================
+   4. APPLICATION LAYOUT
+======================================== */
+
+.clock-app {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding: 2rem 1.25rem;
+}
+
+.clock-shell {
+    position: relative;
+    width: 100%;
+    max-width: 850px;
+    overflow: hidden;
+    padding: clamp(1.25rem, 5vw, 3.5rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-clock);
+}
+
+/* Decorative botanical shapes */
+.clock-shell::before,
+.clock-shell::after {
+    position: absolute;
+    z-index: 0;
+    width: 190px;
+    height: 190px;
+    border: 1px solid rgb(217 139 163 / 18%);
+    border-radius: 50% 0 50% 50%;
+    content: "";
+    pointer-events: none;
+}
+
+.clock-shell::before {
+    top: -120px;
+    right: -65px;
+    transform: rotate(35deg);
+}
+
+.clock-shell::after {
+    bottom: -135px;
+    left: -75px;
+    border-color: rgb(179 198 165 / 18%);
+    transform: rotate(35deg);
+}
+
+.app-header,
+.clock-section,
+.settings-panel,
+.app-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* ========================================
+   5. HEADER
+======================================== */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: clamp(3rem, 8vw, 5.5rem);
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--color-text);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+}
+
+.brand-flower {
+    color: var(--color-coral);
+    font-size: 1.5rem;
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-text);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition:
+        background-color 200ms ease,
+        border-color 200ms ease;
+}
+
+.theme-toggle:hover {
+    border-color: var(--color-coral);
+    background: var(--color-surface-hover);
+}
+
+#themeIcon {
+    color: var(--color-coral);
+    font-size: 1.1rem;
+}
+
+/* ========================================
+   6. CLOCK INTRODUCTION
+======================================== */
+
+.clock-section {
+    text-align: center;
+}
+
+.eyebrow {
+    margin-bottom: 1rem;
+    color: var(--color-coral);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+}
+
+.clock-section h1 {
+    margin-bottom: 0.8rem;
+    font-size: clamp(1.7rem, 5vw, 2.8rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.2;
+}
+
+.intro {
+    margin-bottom: 2.5rem;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+/* ========================================
+   7. DIGITAL CLOCK
+======================================== */
+
+.clock-display {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    width: 100%;
+    margin: 0 auto;
+    padding: clamp(1.25rem, 4vw, 2rem) 0.5rem;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
 }
 
-#clock{
-    font-family: monospace;
-    font-size: 6.5rem;
-    font-weight: bold;
+#clock {
+    color: var(--color-text);
+    font-family: var(--font-clock);
+    font-size: clamp(2.5rem, 9.5vw, 6rem);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.075em;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-shadow: 0 0 35px rgb(255 155 145 / 12%);
+}
+
+.date-display {
+    margin: 1.5rem 0 0.5rem;
+    color: var(--color-coral);
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.timezone-label {
+    margin-bottom: 0;
+    color: var(--color-muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+}
+
+/* ========================================
+   8. SETTINGS PANEL
+======================================== */
+
+.settings-panel {
+    margin-top: 3.5rem;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    background: var(--color-background);
+}
+
+.settings-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 1.75rem;
+}
+
+.settings-flower {
+    color: var(--color-rose);
+    font-size: 1.4rem;
+}
+
+.settings-heading h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.setting-description {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.setting-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.setting-hint {
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+/* ========================================
+   9. TIME FORMAT BUTTONS
+======================================== */
+
+.format-switch {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25rem;
+    padding: 0.3rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+}
+
+.format-button {
+    min-width: 3.5rem;
+    padding: 0.55rem 0.75rem;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-muted);
+    font-family: var(--font-clock);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition:
+        background-color 200ms ease,
+        color 200ms ease;
+}
+
+.format-button:hover {
+    color: var(--color-text);
+}
+
+.format-button.is-active {
+    background: var(--color-coral);
+    color: #211626;
+    font-weight: 700;
+}
+
+.settings-status {
+    margin: 1.25rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
+/* ========================================
+   10. FOOTER
+======================================== */
+
+.app-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+    color: var(--color-muted);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-align: center;
-    color: hsl(0, 0%, 100%);
-    backdrop-filter: blur(5px);
-    background-color: hsl(0, 0%, 100%, 0.1);
-    width: 100%;
+}
+
+.footer-flower {
+    color: var(--color-sage);
+    font-size: 1.1rem;
+}
+
+/* ========================================
+   11. RESPONSIVE DESIGN
+======================================== */
+
+@media (max-width: 575.98px) {
+    .clock-app {
+        padding: 1rem 0.75rem;
+    }
+
+    .clock-shell {
+        padding: 1.25rem 1rem;
+        border-radius: 1rem;
+    }
+
+    .app-header {
+        align-items: flex-start;
+        margin-bottom: 3rem;
+    }
+
+    .brand {
+        gap: 0.4rem;
+        font-size: 0.65rem;
+        letter-spacing: 0.07em;
+    }
+
+    .theme-toggle {
+        gap: 0.35rem;
+        padding: 0.55rem 0.65rem;
+        font-size: 0.7rem;
+    }
+
+    .intro {
+        margin-bottom: 2rem;
+    }
+
+    .settings-panel {
+        margin-top: 2.5rem;
+    }
+
+    .settings-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .format-switch {
+        align-self: flex-start;
+    }
+
+    .app-footer {
+        flex-wrap: wrap;
+        justify-content: center;
+        font-size: 0.55rem;
+    }
+}
+
+/* ========================================
+   12. REDUCED MOTION
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
