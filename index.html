@@ -1,20 +1,145 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Document metadata -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Clock</title>
+    <meta
+        name="description"
+        content="Midnight Bloom — an artistic digital clock with a date display and customizable time settings."
+    >
+    <meta name="theme-color" content="#211626">
+
+    <title>Midnight Bloom | Digital Clock</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Custom styles -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Application logic -->
+    <script src="index.js" defer></script>
 </head>
+
 <body>
+    <!-- Main application -->
+    <main class="clock-app container-fluid">
+        <div class="clock-shell">
 
-    <div id="clock-container">
+            <!-- Header -->
+            <header class="app-header">
+                <a class="brand" href="#" aria-label="Midnight Bloom home">
+                    <span class="brand-flower" aria-hidden="true">✳</span>
+                    <span>MIDNIGHT BLOOM</span>
+                </a>
 
-        <div id="clock">00:00:00</div>
+                <button
+                    class="theme-toggle"
+                    id="themeToggle"
+                    type="button"
+                    aria-label="Switch to light theme"
+                    aria-pressed="false"
+                >
+                    <span id="themeIcon" aria-hidden="true">☼</span>
+                    <span id="themeLabel">Light mode</span>
+                </button>
+            </header>
 
-    </div>
-    
+            <!-- Clock display -->
+            <section class="clock-section" aria-labelledby="clockTitle">
+                <p class="eyebrow">A MOMENT IN BLOOM</p>
 
-    <script src="index.js"></script>
+                <h1 id="clockTitle">Time, in its own rhythm.</h1>
+
+                <p class="intro">
+                    Take a breath. The present moment is yours.
+                </p>
+
+                <div
+                    class="clock-display"
+                    role="timer"
+                    aria-label="Current local time"
+                >
+                    <span id="clock">00:00:00</span>
+                </div>
+
+                <p class="date-display" id="dateDisplay">
+                    Loading date...
+                </p>
+
+                <p class="timezone-label">YOUR LOCAL TIME</p>
+            </section>
+
+            <!-- Clock settings -->
+            <section class="settings-panel" aria-labelledby="settingsTitle">
+                <div class="settings-heading">
+                    <span class="settings-flower" aria-hidden="true">✿</span>
+                    <h2 id="settingsTitle">Make time yours</h2>
+                </div>
+
+                <div class="settings-row">
+                    <div class="setting-description">
+                        <span class="setting-title">Time format</span>
+                        <span class="setting-hint">
+                            Choose how your hours appear.
+                        </span>
+                    </div>
+
+                    <div
+                        class="format-switch"
+                        role="group"
+                        aria-label="Time format"
+                    >
+                        <button
+                            class="format-button is-active"
+                            id="format24"
+                            type="button"
+                            aria-pressed="true"
+                        >
+                            24 H
+                        </button>
+
+                        <button
+                            class="format-button"
+                            id="format12"
+                            type="button"
+                            aria-pressed="false"
+                        >
+                            12 H
+                        </button>
+                    </div>
+                </div>
+
+                <p
+                    class="settings-status"
+                    id="settingsStatus"
+                    aria-live="polite"
+                >
+                    Showing the 24-hour format.
+                </p>
+            </section>
+
+            <!-- Footer -->
+            <footer class="app-footer">
+                <span>DESIGNED TO SLOW YOU DOWN</span>
+                <span class="footer-flower" aria-hidden="true">✳</span>
+                <span>ONE SECOND AT A TIME</span>
+            </footer>
+
+        </div>
+    </main>
 </body>
 </html>
